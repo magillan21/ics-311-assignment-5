@@ -1,7 +1,12 @@
 import heapq
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from islands_graph import PolynesianGraph, create_polynesian_graph
 
+# -------------------------------
+# PERSON 1 - 
+# ICS 311 Assignment: Polynesian Triangle
+# This class implements a 
+# -------------------------------
 class KnowledgeShareLeader:
     """Handles the knowledge sharing leader algorithm"""
     
@@ -43,24 +48,32 @@ class KnowledgeShareLeader:
         Find shortest path between two islands using Dijkstra's algorithm
         Returns (path, total_time)
         """
-    # WIP
-    #
-    #
+        # WIP
+        return [], 0
     
     def plan_knowledge_sharing_trip(self, max_trip_time: int) -> List[str]:
         """
         Plan a single knowledge sharing trip within time budget
         Returns list of islands to visit in order
         """
-    # WIP
-    #
-    #
+        # WIP
+        return []
     
     def execute_trip(self, trip_plan: List[str]):
         """Execute a planned trip and update visit records"""
-    # WIP
-    #
-    #
+        # WIP
+        pass
+
+
+# -------------------------------
+# PERSON 2 - Eric Chae
+# ICS 311 Assignment: Polynesian Triangle
+# This class implements a resource distribution algorithm that uses Dijkstra’s algorithm
+# to efficiently deliver a resource produced in one island (e.g., Hawaii) to all others.
+# Each canoe can carry only one unit per trip, and the goal is to minimize the total number of trips
+# and use the shortest paths for delivery. The graph is represented as a directed, weighted network.
+# -------------------------------
+
 class ResourceDistributor:
     """
     Handles efficient distribution of a resource produced in only one island.
