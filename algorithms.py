@@ -1,5 +1,5 @@
 import heapq
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from islands_graph import PolynesianGraph, create_polynesian_graph
 
 # -------------------------------
