@@ -1,6 +1,6 @@
 import heapq
 from typing import List, Tuple, Dict
-from islands_graph import PolynesianGraph, create_polynesian_graph
+from polynesian_triangle import PolynesianGraph, create_polynesian_graph
 
 # -------------------------------
 # PERSON 1 - 
@@ -67,13 +67,11 @@ class KnowledgeShareLeader:
     # WIP
     #
     #
+        
 # -------------------------------
 # PERSON 2 - Eric Chae
 # ICS 311 Assignment: Polynesian Triangle
 # This class implements a resource distribution algorithm that uses Dijkstra’s algorithm
-# to efficiently deliver a resource produced in one island (e.g., Hawaii) to all others.
-# Each canoe can carry only one unit per trip, and the goal is to minimize the total number of trips
-# and use the shortest paths for delivery. The graph is represented as a directed, weighted network.
 # -------------------------------
 
 class ResourceDistributor:
@@ -84,24 +82,23 @@ class ResourceDistributor:
 
     def __init__(self, graph: PolynesianGraph, resource_name: str, origin_island: str, total_units: int):
         self.graph = graph
-        self.resource_name = resource_name  # e.g., "shells"
-        self.origin_island = origin_island  # e.g., "Hawaii"
-        self.total_units = total_units      # total supply available for distribution
+        self.resource_name = resource_name  # Resource to distribute (e.g., shells)
+        self.origin_island = origin_island  # Where the resource originates
+        self.total_units = total_units      # Total supply available
 
     def dijkstra_all_paths(self, start: str) -> Dict[str, Tuple[int, List[str]]]:
         """
-        Use Dijkstra’s algorithm to compute shortest travel times from the origin island
-        to all other reachable islands.
-        Returns a dictionary mapping each island to (travel_time, path).
+        Computes shortest paths from start to all reachable islands using Dijkstra's.
+        Returns a dictionary: island -> (time, path)
         """
-        heap = [(0, start, [])]  # (cumulative time, current island, path taken)
-        distances = {}  # Final shortest times and paths
+        heap = [(0, start, [])]  # (travel_time, island, path)
+        distances = {}  # Final shortest paths and times
 
         while heap:
             time, node, path = heapq.heappop(heap)
             if node in distances:
                 continue  # Already finalized
-            distances[node] = (time, path + [node])  # Store shortest path to this node
+            distances[node] = (time, path + [node])
             for neighbor, t in self.graph.get_neighbors(node):
                 if neighbor not in distances:
                     heapq.heappush(heap, (time + t, neighbor, path + [node]))
@@ -110,22 +107,17 @@ class ResourceDistributor:
 
     def distribute_resources(self, canoe_capacity: int = 1) -> List[Tuple[str, int, List[str]]]:
         """
-        Plan the distribution of the resource to each island from the origin island.
-        Assumes 1 unit of the resource should go to each island.
-        Returns a list of tuples: (destination_island, trips_needed, route).
+        Distribute one unit to each island from the origin.
+        Returns list of (island, trips_needed, route)
         """
         distances = self.dijkstra_all_paths(self.origin_island)
         results = []
 
         for island_name, (time, path) in distances.items():
             if island_name == self.origin_island:
-                continue  # Skip the origin island itself
-
-            demand = 1  # Each island needs 1 unit of the resource
+                continue  # Skip the origin
+            demand = 1
             trips_needed = -(-demand // canoe_capacity)  # Ceiling division
-
-            # Append result as (island name, number of trips, route taken)
             results.append((island_name, trips_needed, path))
 
-        # Sort islands by how many trips are needed (all are 1 here, but useful if scaled)
-        return sorted(results, key=lambda x: x[1])
+        return sorted(results, key=lambda x: x[1])  # Sort by trips needed
