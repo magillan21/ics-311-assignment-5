@@ -1,5 +1,5 @@
 # main.py
-from algorithms import PolynesianGraph, ResourceDistributor
+from algorithms import PolynesianGraph, ResourceDistributor, KnowledgeShareLeader
 from polynesian_triangle import create_polynesian_graph
 
 def test_knowledge_share():
