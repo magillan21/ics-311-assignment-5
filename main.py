@@ -2,33 +2,34 @@
 from algorithms import PolynesianGraph, ResourceDistributor
 from polynesian_triangle import create_polynesian_graph
 
-# def test_knowledge_share():
-#     """
-#     Test the KnowledgeShareLeader class by planning and executing a trip
-#     that visits high-priority islands within a limited time.
-#     """
-#     print("=== Testing Knowledge Sharing ===")
+def test_knowledge_share():
+    """
+    Test the KnowledgeShareLeader class by planning and executing a trip
+    that visits high-priority islands within a limited time.
+    """
+    print("=== Testing Knowledge Sharing ===")
     
-#     # Create the graph of islands and routes
-#     graph = create_polynesian_graph()
+    # Create the graph of islands and routes
+    graph = create_polynesian_graph()
     
-#     # Initialize the knowledge sharing leader at Hawaii
-#     leader = KnowledgeShareLeader(graph, starting_island="Hawaii")
+    # Initialize the knowledge sharing leader at Hawaii
+    leader = KnowledgeShareLeader(graph, starting_island="Hawaii")
     
-#     # Define the maximum number of days allowed for the trip
-#     max_trip_time = 60
+    # Define the maximum number of days allowed for the trip
+    max_trip_time = 60
 
-#     # Plan the trip based on priorities and travel constraints
-#     trip_plan = leader.plan_knowledge_sharing_trip(max_trip_time)
-#     print(f"Planned trip (max {max_trip_time} days):", trip_plan)
+    # Plan the trip based on priorities and travel constraints
+    trip_plan = leader.plan_knowledge_sharing_trip(max_trip_time)
+    print(f"Planned trip (max {max_trip_time} days):", trip_plan)
 
-#     # Execute the trip and update visit times
-#     leader.execute_trip(trip_plan)
+    # Execute the trip and update visit times
+    leader.execute_trip(trip_plan)
 
-#     # Print out last visited time for each island in the trip
-#     for island_name in trip_plan:
-#         island = graph.islands[island_name]
-#         print(f"{island_name}: Last visited at time {island.last_visited}")
+    # Print out last visited time for each island in the trip
+    unique_islands = list(set(trip_plan))  # Remove duplicates
+    for island_name in unique_islands:
+        island = graph.islands[island_name]
+        print(f"{island_name}: Last visited on day {island.last_visited}, total visits: {island.visit_count}")
 
 
 def test_resource_distribution():
