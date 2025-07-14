@@ -3,9 +3,9 @@ from typing import List, Tuple, Dict
 from polynesian_triangle import PolynesianGraph, create_polynesian_graph
 
 # -------------------------------
-# PERSON 1 - 
+# PERSON 1 - Michaela Gillan
 # ICS 311 Assignment: Polynesian Triangle
-# This class implements 
+# This class implements a knowledge sharing algorithm that utilizess Dijkstra's algorithm.
 # -------------------------------
 
 class KnowledgeShareLeader:
@@ -49,24 +49,126 @@ class KnowledgeShareLeader:
         Find shortest path between two islands using Dijkstra's algorithm
         Returns (path, total_time)
         """
-    # WIP
-    #
-    #
-    
+        if start == end:
+            return ([start], 0)
+        
+        distances = {island: float('inf') for island in self.graph.islands}
+        distances[start] = 0
+        previous = {}
+        pq = [(0, start)]
+        visited = set()
+        
+        while pq:
+            current_dist, current = heapq.heappop(pq)
+            
+            if current in visited:
+                continue
+            visited.add(current)
+            
+            if current == end:
+                # Reconstruct path
+                path = []
+                while current in previous:
+                    path.append(current)
+                    current = previous[current]
+                path.append(start)
+                path.reverse()
+                return (path, distances[end])
+            
+            for neighbor, travel_time in self.graph.get_neighbors(current):
+                distance = current_dist + travel_time
+                if distance < distances[neighbor]:
+                    distances[neighbor] = distance
+                    previous[neighbor] = current
+                    heapq.heappush(pq, (distance, neighbor))
+        
+        return ([], float('inf'))  # No path found
+
     def plan_knowledge_sharing_trip(self, max_trip_time: int) -> List[str]:
         """
         Plan a single knowledge sharing trip within time budget
         Returns list of islands to visit in order
         """
-    # WIP
-    #
-    #
+        trip_plan = [self.starting_island]
+        current_location = self.starting_island
+        remaining_time = max_trip_time
+        visited_this_trip = {self.starting_island}
+        
+        while True:
+            # Find best unvisited island within time constraints
+            best_island = None
+            best_priority = -1
+            best_path = []
+            best_time = float('inf')
+            
+            for island_name in self.graph.get_island_names():
+                if island_name in visited_this_trip:
+                    continue
+                    
+                # Check if we can reach this island and return
+                path_to_island, time_to_island = self.find_shortest_path(current_location, island_name)
+                path_to_start, time_to_start = self.find_shortest_path(island_name, self.starting_island)
+                
+                total_time_needed = time_to_island + time_to_start
+                
+                if total_time_needed <= remaining_time:
+                    priority = self.calculate_island_priority(island_name)
+                    if priority > best_priority:
+                        best_priority = priority
+                        best_island = island_name
+                        best_path = path_to_island
+                        best_time = time_to_island
+            
+            if best_island is None:
+                break  # No more islands reachable within time budget
+            
+            # Add best island to trip
+            trip_plan.extend(best_path[1:])  # Skip current location
+            visited_this_trip.add(best_island)
+            current_location = best_island
+            remaining_time -= best_time
+        
+        # Return to starting island
+        if current_location != self.starting_island:
+            return_path, return_time = self.find_shortest_path(current_location, self.starting_island)
+            if return_time <= remaining_time:
+                trip_plan.extend(return_path[1:])
+        
+        return trip_plan
     
     def execute_trip(self, trip_plan: List[str]):
         """Execute a planned trip and update visit records"""
-    # WIP
-    #
-    #
+        print(f"Knowledge sharing trip: {' -> '.join(trip_plan)}")
+        
+        total_time = 0
+        for i in range(len(trip_plan) - 1):
+            from_island = trip_plan[i]
+            to_island = trip_plan[i + 1]
+            if to_island in self.graph.routes[from_island]:
+                travel_time = self.graph.routes[from_island][to_island]
+                total_time += travel_time
+                print(f"  Travel: {from_island} -> {to_island} ({travel_time} days)")
+        
+        # Update visit records
+        current_time = 0
+        for i in range(len(trip_plan)):
+            island_name = trip_plan[i]
+            
+            if i > 0:  # Calculate time when we arrive at each island
+                from_island = trip_plan[i-1]
+                travel_time = self.graph.routes[from_island][island_name]
+                current_time += travel_time
+
+            # Skip the starting island on the first visit, but update when returning
+            if not (island_name == self.starting_island and i == 0):
+                island = self.graph.islands[island_name]
+                island.last_visited = current_time
+                island.visit_count += 1
+                print(f"  Visited {island_name} (pop: {island.population:,})")
+
+        
+        print(f"  Total trip time: {total_time} days")
+        return total_time
         
 # -------------------------------
 # PERSON 2 - Eric Chae
