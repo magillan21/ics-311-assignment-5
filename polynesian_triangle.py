@@ -9,7 +9,7 @@ class Island:
         self.name = name
         self.population = population
         self.resources = resources or {}
-        self.last_visited = None  # Timestamp of last leader visit
+        self.last_visited = 0  # Timestamp of last leader visit
         self.visit_count = 0
     
     def __repr__(self):
